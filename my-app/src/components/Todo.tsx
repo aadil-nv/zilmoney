@@ -7,7 +7,7 @@ function Todo() {
 
     const  [todos,setTodos] = useState<Todo[]>([]);
     const  [ values,setValues] = useState("")
-    const [editIndex,setEditIndex] = useState()
+    const [editIndex,setEditIndex] = useState<number | null>(null);
 
     const handleAdd = ()=>{
         if(!values) return 
@@ -24,18 +24,16 @@ function Todo() {
         setTodos(todos.filter((_,i)=>i!==index))
     }
 
-    const handleEdit =(index:number,newValue:string)=>{
-        setTodos(todos.filter((val,i)=>{
-            if(i ===index){
-                val = newValue
-            }
-        }))
-    }
-    const handleChangeMark =(index:number)=>{
-        const updatedTodos = [...todos]
-        updatedTodos[index].completed = !updatedTodos[index].completed;
-         setTodos(updatedTodos);
-    }
+    const handleEdit = (index: number) => {
+    setValues(todos[index].task); 
+    setEditIndex(index);         
+  };
+
+    const handleChangeMark = (index: number) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].completed = !updatedTodos[index].completed;
+    setTodos(updatedTodos);
+  };
 
   return (
     <div>
@@ -48,8 +46,9 @@ function Todo() {
             {todos.map((todo,index)=>(
                 
                 <li key={index}>{todo.task} 
-                <input type="checkbox" checked={todo.task} onChange={()=>handleChangeMark(index)}/>
-                <button onClick={()=>handleEdit(index ,todo.task)}>Edit</button>
+                <input type="checkbox" checked={todo.completed} onChange={()=>handleChangeMark(index)}/>
+                <button onClick={handleAdd}>{editIndex !== null ? "Update" : "Add"}</button>
+                <button onClick={()=>handleEdit(index)}>Edit</button>
                 <button onClick={()=>handleDelete(index)}>delete</button>
                 
                 </li>
